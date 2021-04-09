@@ -1,5 +1,6 @@
 {
     "name": "fflch/centrodametropole_breadcrumb",
     "description": "centrodametropole_breadcrumb",
+    "type": "drupal-module",
     "license": "GPL-2.0-or-later"
 }
