@@ -2,4 +2,4 @@ name: centrodametropole Custom Breadcrumb
 type: module
 description: Alters the breadcrumb trail so it uses main menu
 core_version_requirement: ^8 || ^9
-package: Universidade de São Paulo
+package: Faculdade de Filosofia Letras e Ciências Humanas
