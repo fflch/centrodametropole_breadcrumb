@@ -7,7 +7,7 @@ use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Access\AccessManagerInterface;
 use Drupal\Core\Path\PathValidatorInterface;
-use Drupal\Core\Path\AliasManagerInterface;
+use Drupal\path_alias\AliasManagerInterface; #era use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\Core\Link;
 
 use Drupal\Core\Menu\MenuActiveTrail;
@@ -29,6 +29,26 @@ use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 
 
 class BreadcrumbBuilder implements BreadcrumbBuilderInterface {
+  /**
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * @var \Drupal\Core\Path\PathValidatorInterface
+   */
+  protected $pathValidator;
+
+  /**
+   * @var \Drupal\path_alias\AliasManagerInterface
+   */
+  protected $aliasManager;
+  
   use \Drupal\Core\StringTranslation\StringTranslationTrait;
 
   protected $menuActiveTrail;
