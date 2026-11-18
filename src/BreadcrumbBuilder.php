@@ -4,34 +4,27 @@ namespace Drupal\centrodametropole_custom_breadcrumb;
 
 use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
+use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Access\AccessManagerInterface;
-use Drupal\Core\Path\PathValidatorInterface;
-use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\Core\Link;
-
+use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\Menu\MenuActiveTrail;
 use Drupal\Core\Menu\MenuActiveTrailInterface;
-use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\Menu\MenuLinkManagerInterface;
-use Drupal\Core\Cache\CacheBackendInterface;
-
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Controller\TitleResolverInterface;
-
-use Drupal\Core\Path\CurrentPathStack;
-use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
-use Drupal\Core\Routing\RequestContext;
+use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\system\PathBasedBreadcrumbBuilder;
-use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
-
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\path_alias\AliasManagerInterface;
 
 class BreadcrumbBuilder implements BreadcrumbBuilderInterface {
-  use \Drupal\Core\StringTranslation\StringTranslationTrait;
+  use StringTranslationTrait;
 
   protected $menuActiveTrail;
+  protected $entityTypeManager;
+  protected $configFactory;
+  protected $pathValidator;
+  protected $aliasManager;
   protected $menuLinkManager;
   protected $cacheMenu;
   protected $lock;
@@ -76,9 +69,9 @@ class BreadcrumbBuilder implements BreadcrumbBuilderInterface {
     if ($route_name == 'entity.node.canonical') {
       $this->entity_id = $route_match->getRawParameters()->all()['node'];
       if (!empty($this->entity_id) && is_numeric($this->entity_id)) {
-        $entity = \Drupal::entityTypeManager()->getStorage('node')->load($this->entity_id);
-        if ($entity->bundle() == 'article' || $entity->bundle() == 'pessoas') {
-          return [];
+        $entity = $this->entityTypeManager->getStorage('node')->load($this->entity_id);
+        if ($entity && in_array($entity->bundle(), ['article', 'pessoas'])) {
+          return FALSE;
         }
       }
     }
